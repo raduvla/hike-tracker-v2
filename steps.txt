@@ -1,0 +1,177 @@
+Vlad@LORDUL-CHETIS MINGW64 ~
+$ yarn --version
+1.22.22
+
+Vlad@LORDUL-CHETIS MINGW64 ~
+$ cd /c/workspace/hike-tracker-v2
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2
+$ mkdir frontend
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2
+$ cd frontend
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend
+$ cat > package.json << 'EOF'
+{
+  "name": "frontend",
+  "private": true,
+  "workspaces": {
+    "packages": ["apps/*"],
+    "nohoist": [
+      "**/react-native",
+      "**/react-native/**",
+      "**/@react-native/**"
+    ]
+  }
+}
+EOF
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend
+$ mkdir -p apps/mobile
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend
+$ cd apps/mobile
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile
+$ npx @react-native-community/cli@latest init mobile --skip-install --version 0.76.6
+
+               ######                ######
+             ###     ####        ####     ###
+            ##          ###    ###          ##
+            ##             ####             ##
+            ##             ####             ##
+            ##           ##    ##           ##
+            ##         ###      ###         ##
+             ##  ########################  ##
+          ######    ###            ###    ######
+      ###     ##    ##              ##    ##     ###
+   ###         ## ###      ####      ### ##         ###
+  ##           ####      ########      ####           ##
+ ##             ###     ##########     ###             ##
+  ##           ####      ########      ####           ##
+   ###         ## ###      ####      ### ##         ###
+      ###     ##    ##              ##    ##     ###
+          ######    ###            ###    ######
+             ##  ########################  ##
+            ##         ###      ###         ##
+            ##           ##    ##           ##
+            ##             ####             ##
+            ##             ####             ##
+            ##          ###    ###          ##
+             ###     ####        ####     ###
+               ######                ######
+
+
+              Welcome to React Native 0.76.6!
+                 Learn once, write anywhere
+
+✔ Downloading template
+✔ Copying template
+✔ Processing template
+✔ Dependencies installation skipped
+✔ Initializing Git repository
+
+
+  Run instructions for Android:
+    • Have an Android emulator running (quickest way to get started), or a device connected.
+    • cd "C:\Workspace\hike-tracker-v2\frontend\apps\mobile\mobile" && npx react-native run-android
+
+  Run instructions for Windows:
+    • See https://aka.ms/ReactNativeGuideWindows for the latest up-to-date instructions.
+
+
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile
+$ shopt -s dotglob
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile
+$ mv mobile/* . 2>/dev/null
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile (main)
+$ rmdir mobile
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile (main)
+$ shopt -u dotglob
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile (main)
+$ sed -i 's/"name": "mobile"/"name": "@frontend\/mobile"/' package.json
+
+Vlad@LORDUL-CHETIS MINGW64 /c/workspace/hike-tracker-v2/frontend/apps/mobile (main)
+$ cd /c/Workspace/hike-tracker-v2/frontend
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend
+$ yarn install
+yarn install v1.22.22
+info No lockfile found.
+[1/4] Resolving packages...
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > eslint > @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > @react-native-community/cli-platform-android > @react-native-community/cli-tools > sudo-prompt@9.2.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > glob > inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > babel-jest > babel-plugin-istanbul > test-exclude > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > jest > @jest/core > jest-runtime > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > jest > jest-cli > jest-config > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > jest > @jest/core > @jest/reporters > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > eslint > @humanwhocodes/config-array > @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > jscodeshift > @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > jscodeshift > @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > jscodeshift > @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > eslint > file-entry-cache > flat-cache > rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > jscodeshift > temp > rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/community-cli-plugin > @react-native/dev-middleware > chromium-edge-launcher > rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > eslint > file-entry-cache > flat-cache > rimraf > glob@7.2.3: Glob versions prior to v9 are no longer supported
+warning workspace-aggregator-03843b52-a287-485b-b6b9-a6bfe5c1ce9e > @frontend/mobile > react-native > @react-native/codegen > jscodeshift > temp > rimraf > glob@7.2.3: Glob versions prior to v9 are no longer supported
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+Done in 36.34s.
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend
+$ ls apps/mobile/node_modules/react-native
+android/           Libraries/          react-native.config.js
+build.gradle.kts   LICENSE             README.md
+cli.js*            node_modules/       rn-get-polyfills.js
+flow/              package.json        scripts/
+gradle/            React/              sdks/
+gradle.properties  React.podspec       settings.gradle.kts
+index.js           ReactAndroid/       src/
+interface.js       ReactApple/         third-party-podspecs/
+jest/              ReactCommon/        types/
+jest-preset.js     React-Core.podspec
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend
+$ echo "sdk.dir=C:/Users/Vlad/AppData/Local/Android/Sdk" > apps/mobile/android/local.properties
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend
+$ cd apps/mobile/android
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend/apps/mobile/android (main)
+$ ./gradlew assembleDebug
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+BUILD SUCCESSFUL in 2m 48s
+61 actionable tasks: 61 executed
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend/apps/mobile/android (main)
+$ cd ..
+
+Vlad@LORDUL-CHETIS MINGW64 /c/Workspace/hike-tracker-v2/frontend/apps/mobile (main)
+$ yarn android
+yarn run v1.22.22
+$ react-native run-android
+info Installing the app...
+
+> Task :app:installDebug
+Installing APK 'app-debug.apk' on 'Pixel_7(AVD) - 16' for :app:debug
+Installed on 1 device.
+
+BUILD SUCCESSFUL in 20s
+62 actionable tasks: 13 executed, 49 up-to-date
+info Connecting to the development server...
+8081
+info Starting the app on "emulator-5554"...
+Starting: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=com.mobile/.MainActivity }

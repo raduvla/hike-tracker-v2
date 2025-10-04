@@ -1,0 +1,17 @@
+{
+  "name": "frontend",
+  "private": true,
+  "workspaces": {
+    "packages": ["apps/*"],
+    "nohoist": [
+      "**/react-native",
+      "**/react-native/**",
+      "**/@react-native/**"
+    ]
+  },
+  "scripts": {
+    "mobile": "yarn workspace @frontend/mobile android",
+    "web": "yarn workspace @frontend/web dev",
+    "web:build": "yarn workspace @frontend/web build"
+  }
+}
