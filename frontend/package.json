@@ -2,7 +2,8 @@
   "name": "frontend",
   "private": true,
   "workspaces": {
-    "packages": ["apps/*"],
+    "packages": ["apps/*",
+      "packages/*"],
     "nohoist": [
       "**/react",
       "**/react/**",
