@@ -135,14 +135,14 @@ export class ApiClient {
     });
 
     // Real implementation:
-    // return this.request<AuthResponse>('/auth/social', {
+    // return this.request<AuthResponse>('/api/auth/social', {
     //   method: 'POST',
     //   body: JSON.stringify(data),
     // });
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/auth/refresh', {
+    return this.request<AuthResponse>('/api/auth/refresh', {
       method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
@@ -159,7 +159,7 @@ export class ApiClient {
 
   // User endpoints
   async getCurrentUser(accessToken: string): Promise<User> {
-    return this.request<User>('/users/me', {
+    return this.request<User>('/api/auth/me', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -177,6 +177,188 @@ export class ApiClient {
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(data),
+    });
+  }
+
+  // Track endpoints (port 8084)
+  async createTrack(
+    accessToken: string,
+    data: {
+      title: string;
+      description: string;
+      privacy: string;
+      points: Point[];
+    }
+  ): Promise<any> {
+    return this.request('/api/tracks', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getTrack(accessToken: string, trackId: string): Promise<any> {
+    return this.request(`/api/tracks/${trackId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async searchTracks(
+    accessToken: string,
+    query?: string,
+    privacy?: string
+  ): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (query) params.append('q', query);
+    if (privacy) params.append('privacy', privacy);
+
+    return this.request(`/api/tracks?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async getPopularTracks(accessToken: string): Promise<any[]> {
+    return this.request('/api/tracks/popular', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async uploadTrackPhotos(
+    accessToken: string,
+    trackId: string,
+    files: File[]
+  ): Promise<any[]> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/api/tracks/${trackId}/photos`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error('Failed to upload photos');
+      }
+
+      return response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
+    }
+  }
+
+  // Social endpoints (port 8085)
+  async getFriends(accessToken: string): Promise<any[]> {
+    return this.request('/api/friends', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async sendFriendRequest(
+    accessToken: string,
+    friendId: string
+  ): Promise<void> {
+    return this.request('/api/friends/request', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ friendId }),
+    });
+  }
+
+  async acceptFriendRequest(
+    accessToken: string,
+    requestId: string
+  ): Promise<void> {
+    return this.request(`/api/friends/accept/${requestId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async rejectFriendRequest(
+    accessToken: string,
+    requestId: string
+  ): Promise<void> {
+    return this.request(`/api/friends/reject/${requestId}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async getFeed(accessToken: string, limit: number = 50): Promise<any[]> {
+    return this.request(`/api/feed?limit=${limit}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async addComment(
+    accessToken: string,
+    trackId: string,
+    content: string
+  ): Promise<any> {
+    return this.request(`/api/tracks/${trackId}/comments`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+  }
+
+  async getComments(accessToken: string, trackId: string): Promise<any[]> {
+    return this.request(`/api/tracks/${trackId}/comments`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async likeTrack(accessToken: string, trackId: string): Promise<void> {
+    return this.request(`/api/tracks/${trackId}/like`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+  }
+
+  async unlikeTrack(accessToken: string, trackId: string): Promise<void> {
+    return this.request(`/api/tracks/${trackId}/like`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
   }
 
