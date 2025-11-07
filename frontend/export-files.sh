@@ -13,6 +13,7 @@ find . -type f \( \
   -name "*.tsx" -o \
   -name "*.properties" -o \
   -name "*.kt" -o \
+  -name "*.md" -o \
   -name "*.json" \
 \) ! -path "*/node_modules/*" ! -path "*/build/*" ! -path "*/dist/*" | while read -r file; do
   echo "===== FILE: $file =====" >> "$OUTPUT_FILE"

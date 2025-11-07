@@ -19,7 +19,7 @@ export class ApiClient {
     this.timeout = timeout;
   }
 
-  private async request<T>(
+    private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
@@ -27,7 +27,16 @@ export class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      const url = endpoint.startsWith('http') 
+        ? endpoint 
+        : `${this.baseUrl}${endpoint}`;
+      
+      console.log('🌐 API Request:', {
+        method: options.method || 'GET',
+        url,
+      });
+
+      const response = await fetch(url, {
         ...options,
         signal: controller.signal,
         headers: {
@@ -38,21 +47,38 @@ export class ApiClient {
 
       clearTimeout(timeoutId);
 
+      console.log('📥 API Response:', {
+        status: response.status,
+        ok: response.ok,
+      });
+
       if (!response.ok) {
-        const error: ApiError = await response.json().catch(() => ({
-          code: 'UNKNOWN_ERROR',
-          message: `Request failed with status ${response.status}`,
-        }));
-        throw new Error(error.message);
+        const errorText = await response.text().catch(() => '');
+        console.error('❌ API Error Response:', errorText);
+        
+        let error: ApiError;
+        try {
+          error = JSON.parse(errorText);
+        } catch {
+          error = {
+            code: 'HTTP_ERROR',
+            message: `Request failed with status ${response.status}`,
+          };
+        }
+        
+        throw new Error(error.message || `HTTP ${response.status}`);
       }
 
-      return response.json();
+      const data = await response.json();
+      console.log('✅ API Success:', data);
+      return data;
     } catch (error) {
       clearTimeout(timeoutId);
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           throw new Error('Request timeout');
         }
+        console.error('❌ Request failed:', error.message);
         throw error;
       }
       throw new Error('Unknown error occurred');
@@ -61,95 +87,37 @@ export class ApiClient {
 
   // Auth endpoints
   async login(data: LoginRequest): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // Mock implementation for now
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          user: {
-            id: '1',
-            username: data.username,
-            email: `${data.username}@example.com`,
-            createdAt: new Date().toISOString(),
-          },
-          tokens: {
-            accessToken: 'mock_access_token',
-            refreshToken: 'mock_refresh_token',
-          },
-        });
-      }, 500);
+  
+    return this.request<AuthResponse>('login', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
-
-    // Real implementation:
-    // return this.request<AuthResponse>('/auth/login', {
-    //   method: 'POST',
-    //   body: JSON.stringify(data),
-    // });
   }
 
   async signup(data: SignupRequest): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // Mock implementation for now
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          user: {
-            id: Date.now().toString(),
-            username: data.username,
-            email: data.email,
-            createdAt: new Date().toISOString(),
-          },
-          tokens: {
-            accessToken: 'mock_access_token',
-            refreshToken: 'mock_refresh_token',
-          },
-        });
-      }, 500);
-    });
 
-    // Real implementation:
-    // return this.request<AuthResponse>('/auth/signup', {
-    //   method: 'POST',
-    //   body: JSON.stringify(data),
-    // });
+    return this.request<AuthResponse>('/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   }
 
   async socialAuth(data: SocialAuthRequest): Promise<AuthResponse> {
-    // TODO: Replace with real API call
-    // Mock implementation for now
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          user: {
-            id: Date.now().toString(),
-            username: `${data.provider}_user`,
-            email: `user@${data.provider}.com`,
-            createdAt: new Date().toISOString(),
-          },
-          tokens: {
-            accessToken: 'mock_access_token',
-            refreshToken: 'mock_refresh_token',
-          },
-        });
-      }, 500);
+    return this.request<AuthResponse>('/social', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
-
-    // Real implementation:
-    // return this.request<AuthResponse>('/api/auth/social', {
-    //   method: 'POST',
-    //   body: JSON.stringify(data),
-    // });
   }
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/api/auth/refresh', {
+    return this.request<AuthResponse>('/refresh', {
       method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
   }
 
   async logout(accessToken: string): Promise<void> {
-    return this.request<void>('/auth/logout', {
+    return this.request<void>('/logout', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -159,7 +127,7 @@ export class ApiClient {
 
   // User endpoints
   async getCurrentUser(accessToken: string): Promise<User> {
-    return this.request<User>('/api/auth/me', {
+    return this.request<User>('/me', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -435,7 +403,16 @@ export class ApiClient {
   }
 }
 
-// Export singleton instance
-export const apiClient = new ApiClient(
-  process.env.BACKEND_BASE_URL || 'http://localhost:3000'
-);
+
+// Helper to get auth service URL
+function getAuthServiceUrl(): string {
+  try {
+    const Config = require('react-native-config').default;
+    return Config.AUTH_SERVICE_URL || 'http://63.179.161.152:8083/api/auth';
+  } catch {
+    return 'http://63.179.161.152:8083/api/auth';
+  }
+}
+
+// Export singleton with auth service URL
+export const apiClient = new ApiClient(getAuthServiceUrl());
